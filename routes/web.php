@@ -50,9 +50,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::get('/audit-logs', AuditLogController::class)->name('audit-logs.index');
         Route::get('/operations', OperationsController::class)->name('operations.index');
-        Route::resource('categories', CategoryController::class)->only(['store', 'update', 'destroy']);
-        Route::resource('menus', MenuController::class)->only(['store', 'update', 'destroy']);
-        Route::resource('users', UserController::class)->only(['store', 'update', 'destroy']);
+        Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::resource('menus', MenuController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::resource('users', UserController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::patch('/users/{user}/status', [UserController::class, 'status'])->name('users.status');
+        Route::get('/settings', [AdminController::class, 'settingsPage'])->name('settings.index');
         Route::patch('/menus/{menu}/availability', [AdminController::class, 'availability'])->name('menus.availability');
         Route::post('/settings', [AdminController::class, 'settings'])->name('settings');
     });

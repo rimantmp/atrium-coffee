@@ -24,4 +24,19 @@ enum OrderStatus: string
             self::Cancelled => 'Dibatalkan',
         };
     }
+
+    /**
+     * Badge variant per DESIGN.md 11.5. Kept beside label() so the
+     * status-to-style mapping stays server-side and testable.
+     */
+    public function badgeVariant(): string
+    {
+        return match ($this) {
+            self::PendingPayment, self::WaitingVerification => 'warning',
+            self::Processing => 'info',
+            self::Ready => 'success',
+            self::Queued, self::Completed => 'neutral',
+            self::Cancelled => 'error',
+        };
+    }
 }

@@ -21,6 +21,31 @@ class CheckoutIdempotencyTest extends TestCase
             ->assertSee('name="checkout_token"', false);
     }
 
+    public function test_menu_page_renders_redesigned_storefront_and_available_catalog(): void
+    {
+        $category = Category::create(['name' => 'Kopi', 'slug' => 'kopi', 'is_active' => true]);
+        Menu::create([
+            'category_id' => $category->id,
+            'sku' => 'LATTE-1',
+            'name' => 'Cafe Latte',
+            'description' => 'Kopi susu lembut.',
+            'price' => 26000,
+            'estimated_prep_minutes' => 5,
+            'is_available' => true,
+            'is_active' => true,
+        ]);
+
+        $response = $this->get(route('menu'));
+
+        $response->assertOk()
+            ->assertSee('Pesan favoritmu, tanpa antre lama.')
+            ->assertSee('Cari menu favoritmu...')
+            ->assertSee('Cafe Latte')
+            ->assertSee('Rp26.000')
+            ->assertSee('Pesanan Anda')
+            ->assertSee('data-order-form', false);
+    }
+
     public function test_duplicate_checkout_token_returns_same_order_without_duplicate_items_or_history(): void
     {
         $category = Category::create(['name' => 'Kopi', 'slug' => 'kopi', 'is_active' => true]);

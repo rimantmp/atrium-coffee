@@ -2,15 +2,16 @@
 <html lang="id">
 <head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Dashboard' }} — Atrium Coffee</title>
-    <meta name="theme-color" content="#7367f0">
+    <title>{{ $title ?? 'Dashboard' }} · Atrium Coffee</title>
+    <meta name="theme-color" content="#8b563e">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-slate-50">
+<body class="min-h-screen bg-stone-50">
+    <a href="#konten-utama" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-coffee-600 focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-white">Lewati ke konten utama</a>
     @include('layouts.partials.sidebar')
-    <div class="flex min-h-screen flex-col lg:pl-72">
+    <div class="flex min-h-screen flex-col lg:pl-64">
         @include('layouts.partials.navbar')
-        <main class="flex-1 p-4 sm:p-6 lg:p-8">
+        <main id="konten-utama" class="flex-1 p-4 sm:p-6 lg:p-7">
             <div class="mx-auto max-w-[1600px]">
                 @include('layouts.partials.alerts')
                 @yield('content')

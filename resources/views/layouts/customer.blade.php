@@ -3,20 +3,26 @@
 <head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Atrium Coffee' }}</title>
-    <meta name="theme-color" content="#7367f0">
+    <meta name="theme-color" content="#8b563e">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-        <div class="mx-auto flex h-18 max-w-6xl items-center justify-between px-4 sm:px-6">
-            <a href="{{ route('menu') }}" class="flex items-center gap-2.5"><span class="grid size-9 place-items-center rounded-xl bg-coffee-500 font-bold text-white">A</span><span class="text-base font-bold tracking-wide text-slate-800">ATRIUM <span class="font-medium text-coffee-500">COFFEE</span></span></a>
-            <a href="{{ route('login') }}" class="ui-button-secondary min-h-10 px-3.5">Login Staf</a>
+<body class="bg-stone-50">
+    <a href="#konten-utama" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-coffee-600 focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-white">Lewati ke konten utama</a>
+    <header class="sticky top-0 z-30 border-b border-stone-200 bg-white/95 backdrop-blur-sm">
+        <div class="mx-auto flex min-h-16 max-w-[1440px] items-center gap-5 px-4 py-2 sm:px-6 xl:px-8">
+            <a href="{{ route('menu') }}" class="flex shrink-0 items-center gap-2.5">
+                <span class="grid size-10 place-items-center rounded-xl bg-coffee-600 text-lg font-bold text-white">A</span>
+                <span class="text-base font-extrabold tracking-wide text-stone-900">ATRIUM <span class="font-semibold text-coffee-600">COFFEE</span></span>
+            </a>
+            <div class="flex flex-1 items-center justify-end gap-8 md:justify-center">@yield('header-tools')</div>
+            <x-button :href="route('login')" variant="secondary">Login Staf</x-button>
         </div>
     </header>
-    <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-10">
+    <main id="konten-utama" class="mx-auto max-w-[1440px] px-4 py-4 sm:px-6 xl:px-8">
         @include('layouts.partials.alerts')
         @yield('content')
     </main>
-    <div class="mx-auto max-w-6xl px-4 sm:px-6">@include('layouts.partials.footer')</div>
+    @yield('mobile-cart-bar')
+    <div class="mx-auto max-w-[1440px] px-4 sm:px-6 xl:px-8">@include('layouts.partials.footer')</div>
 </body>
 </html>

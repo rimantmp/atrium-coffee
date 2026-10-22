@@ -8,11 +8,26 @@ use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Services\AuditService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
     public function __construct(private readonly AuditService $audit) {}
+
+    public function index(Request $request): View
+    {
+        $search = $request->string('search')->trim()->toString();
+        $categories = Category::query()
+            ->withCount('menus')
+            ->when($search, fn ($query, $search) => $query->where('name', 'like', "%{$search}%"))
+            ->orderBy('sort_order')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.categories', compact('categories'));
+    }
 
     public function store(StoreCategoryRequest $request): RedirectResponse
     {

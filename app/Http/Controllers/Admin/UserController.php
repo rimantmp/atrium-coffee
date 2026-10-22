@@ -8,10 +8,29 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Services\AuditService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
     public function __construct(private readonly AuditService $audit) {}
+
+    public function index(Request $request): View
+    {
+        $search = $request->string('search')->trim()->toString();
+        $role = $request->string('role')->toString();
+        $status = $request->string('status')->toString();
+        $users = User::query()
+            ->when($search, fn ($query, $search) => $query->where(fn ($query) => $query->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%")))
+            ->when(in_array($role, ['ADMIN', 'CASHIER', 'KITCHEN', 'OWNER'], true), fn ($query) => $query->where('role', $role))
+            ->when($status === 'active', fn ($query) => $query->where('is_active', true))
+            ->when($status === 'inactive', fn ($query) => $query->where('is_active', false))
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.users', compact('users'));
+    }
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
@@ -38,6 +57,19 @@ class UserController extends Controller
         $this->audit->record('USER_UPDATED', $user, $old, $user->only(['name', 'email', 'role', 'is_active']), null, $request->user()->id);
 
         return back()->with('success', 'Pengguna berhasil diperbarui.');
+    }
+
+    public function status(Request $request, User $user): RedirectResponse
+    {
+        if ($request->user()->is($user) && $user->is_active) {
+            return back()->withErrors(['user' => 'Anda tidak dapat menonaktifkan akun sendiri.']);
+        }
+
+        $old = $user->only(['is_active']);
+        $user->update(['is_active' => ! $user->is_active]);
+        $this->audit->record('USER_STATUS_UPDATED', $user, $old, $user->only(['is_active']), null, $request->user()->id);
+
+        return back()->with('success', 'Status pengguna berhasil diperbarui.');
     }
 
     public function destroy(User $user): RedirectResponse

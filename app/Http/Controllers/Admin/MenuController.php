@@ -5,15 +5,37 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
+use App\Models\Category;
 use App\Models\Menu;
 use App\Services\AuditService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class MenuController extends Controller
 {
     public function __construct(private readonly AuditService $audit) {}
+
+    public function index(Request $request): View
+    {
+        $search = $request->string('search')->trim()->toString();
+        $categoryId = $request->integer('category');
+        $status = $request->string('status')->toString();
+        $categories = Category::query()->orderBy('sort_order')->get(['id', 'name']);
+        $menus = Menu::query()
+            ->with('category:id,name')
+            ->when($search, fn ($query, $search) => $query->where(fn ($query) => $query->where('name', 'like', "%{$search}%")->orWhere('sku', 'like', "%{$search}%")))
+            ->when($categoryId > 0, fn ($query) => $query->where('category_id', $categoryId))
+            ->when($status === 'available', fn ($query) => $query->where('is_available', true)->where('is_active', true))
+            ->when($status === 'unavailable', fn ($query) => $query->where(fn ($query) => $query->where('is_available', false)->orWhere('is_active', false)))
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.menus', compact('categories', 'menus'));
+    }
 
     public function store(StoreMenuRequest $request): RedirectResponse
     {

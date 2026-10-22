@@ -1,0 +1,187 @@
+<mxfile host="Electron" agent="Claude Code">
+  <diagram id="atrium-activity" name="Activity Diagram - Siklus Pesanan">
+    <mxGraphModel dx="975" dy="580" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pool" parent="1" style="swimlane;horizontal=0;startSize=0;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=14;" value="Atrium Coffee — Siklus Pesanan (Order Lifecycle)" vertex="1">
+          <mxGeometry height="1680" width="1120" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_cust" parent="pool" style="swimlane;startSize=40;collapsible=0;fillColor=#ffffff;strokeColor=#b85450;fontColor=#b85450;fontStyle=1;" value="Pelanggan&#xa;(QR Menu)" vertex="1">
+          <mxGeometry height="1680" width="220" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="lane_cust" style="ellipse;fillColor=#d5e8d4;strokeColor=#82b366;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="95" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_buka" parent="lane_cust" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" value="Buka halaman menu&#xa;(scan QR / route menu)" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c_pilih" parent="lane_cust" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" value="Pilih kategori,&#xa;tambah menu ke keranjang" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="c_checkout" parent="lane_cust" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" value="Isi data pelanggan&#xa;&amp; kirim checkout" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="c_track" parent="lane_cust" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" value="Buka halaman lacak&#xa;(tracking_token)" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="c_bayar" parent="lane_cust" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" value="Pilih metode bayar&#xa;(CASH / QRIS) &amp; bayar" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="c_terima" parent="lane_cust" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" value="Ambil / terima pesanan" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="1490" as="geometry" />
+        </mxCell>
+        <mxCell id="end1" parent="lane_cust" style="ellipse;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="90" y="1600" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_sys" parent="pool" style="swimlane;startSize=40;collapsible=0;fillColor=#ffffff;strokeColor=#6c8ebf;fontColor=#3a5f8a;fontStyle=1;" value="Sistem&#xa;(CheckoutService / QueueService)" vertex="1">
+          <mxGeometry height="1680" width="240" x="220" as="geometry" />
+        </mxCell>
+        <mxCell id="d_valid" parent="lane_sys" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Menu tersedia &amp;&#xa;data valid?" vertex="1">
+          <mxGeometry height="70" width="180" x="30" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="s_create" parent="lane_sys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Buat Order PENDING_PAYMENT&#xa;+ OrderItems + status history&#xa;(idempotent via checkout_token)" vertex="1">
+          <mxGeometry height="70" width="160" x="40" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="s_reqpay" parent="lane_sys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Simpan Payment PENDING&#xa;status WAITING_VERIFICATION&#xa;+ audit log" vertex="1">
+          <mxGeometry height="70" width="160" x="40" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="s_enqueue" parent="lane_sys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="payAndEnqueue:&#xa;Payment PAID, QueueEntry WAITING&#xa;status QUEUED + audit + history" vertex="1">
+          <mxGeometry height="70" width="160" x="40" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="s_cancel" parent="lane_sys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Order &amp; QueueEntry CANCELLED&#xa;simpan alasan + audit log" vertex="1">
+          <mxGeometry height="60" width="160" x="40" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="end_cancel" parent="lane_sys" style="ellipse;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="95" y="1360" as="geometry" />
+        </mxCell>
+        <mxCell id="s_complete" parent="lane_sys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Status COMPLETED&#xa;+ kirim notifikasi" vertex="1">
+          <mxGeometry height="50" width="160" x="40" y="1410" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_cash" parent="pool" style="swimlane;startSize=40;collapsible=0;fillColor=#ffffff;strokeColor=#d6b656;fontColor=#8a6d1a;fontStyle=1;" value="Kasir&#xa;(CASHIER / ADMIN)" vertex="1">
+          <mxGeometry height="1680" width="220" x="460" as="geometry" />
+        </mxCell>
+        <mxCell id="k_lihat" parent="lane_cash" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Cek pembayaran&#xa;pending di kasir" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="k_walkin" parent="lane_cash" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Input order walk-in&#xa;langsung di kasir" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="d_verif" parent="lane_cash" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Verifikasi&#xa;pembayaran?" vertex="1">
+          <mxGeometry height="70" width="160" x="30" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="d_cancel" parent="lane_cash" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Batalkan&#xa;pesanan?" vertex="1">
+          <mxGeometry height="70" width="160" x="30" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="k_serah" parent="lane_cash" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Panggil &amp; serahkan pesanan,&#xa;tandai selesai" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="1360" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_kitchen" parent="pool" style="swimlane;startSize=40;collapsible=0;fillColor=#ffffff;strokeColor=#9673a6;fontColor=#6b4f7c;fontStyle=1;" value="Dapur&#xa;(KITCHEN / ADMIN)" vertex="1">
+          <mxGeometry height="1680" width="220" x="680" as="geometry" />
+        </mxCell>
+        <mxCell id="k_claim" parent="lane_kitchen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Claim antrean berikutnya&#xa;(status PROCESSING)" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="k_masak" parent="lane_kitchen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Siapkan / masak pesanan" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="1220" as="geometry" />
+        </mxCell>
+        <mxCell id="k_ready" parent="lane_kitchen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Tandai siap (READY)&#xa;+ enqueue notifikasi" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="1310" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_admin" parent="pool" style="swimlane;startSize=40;collapsible=0;fillColor=#ffffff;strokeColor=#82b366;fontColor=#4a7330;fontStyle=1;" value="Admin / Owner" vertex="1">
+          <mxGeometry height="1680" width="220" x="900" as="geometry" />
+        </mxCell>
+        <mxCell id="a_menu" parent="lane_admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="CRUD kategori &amp; menu&#xa;toggle availabilitas" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="a_user" parent="lane_admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Kelola user, role&#xa;&amp; pengaturan aplikasi" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="a_lapor" parent="lane_admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Audit log, operasional,&#xa;laporan owner + export" vertex="1">
+          <mxGeometry height="50" width="160" x="30" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="pool" source="start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="c_buka">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="pool" source="c_buka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="c_pilih">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="pool" source="c_pilih" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="c_checkout">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="pool" source="c_checkout" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="d_valid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="pool" source="d_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontStyle=1;" target="s_create" value="Ya">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="pool" source="d_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontStyle=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="c_pilih" value="Tidak — perbaiki&#xa;keranjang">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="pool" source="s_create" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="c_track">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="pool" source="c_track" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="c_bayar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="pool" source="c_bayar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="s_reqpay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="pool" source="s_reqpay" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="k_lihat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="pool" source="k_lihat" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="d_verif">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="pool" source="d_verif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontStyle=1;" target="s_enqueue" value="Ya — terima">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="pool" source="d_verif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontStyle=1;" target="d_cancel" value="Tunggu / tolak">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="pool" source="k_walkin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontStyle=1;" target="s_enqueue" value="bayar langsung&#xa;(walk-in)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="pool" source="s_enqueue" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="k_claim">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="pool" source="k_claim" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="k_masak">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="pool" source="k_masak" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="k_ready">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="pool" source="k_ready" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="k_serah">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="pool" source="k_ready" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;dashed=1;fontStyle=2;fontSize=10;" target="c_track" value="notifikasi siap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e20" edge="1" parent="pool" source="k_serah" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="s_complete">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="pool" source="s_complete" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="c_terima">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e22" edge="1" parent="pool" source="c_terima" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="end1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e23" edge="1" parent="pool" source="d_cancel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontStyle=1;" target="s_cancel" value="Ya — batalkan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e24" edge="1" parent="pool" source="d_cancel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontStyle=1;exitX=1;exitY=0;exitDx=0;exitDy=0;" target="k_lihat" value="Tidak — tetap&#xa;menunggu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e25" edge="1" parent="pool" source="s_cancel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="end_cancel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e26" edge="1" parent="pool" source="a_menu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;dashed=1;fontStyle=2;fontSize=10;" target="c_pilih" value="menentukan menu&#xa;yang tampil">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e27" edge="1" parent="pool" source="s_enqueue" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;dashed=1;fontStyle=2;fontSize=10;" target="a_lapor" value="audit: PAYMENT_SUBMITTED,&#xa;ORDER_PAID_AND_QUEUED, ORDER_READY,&#xa;ORDER_COMPLETED, ORDER_CANCELLED">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

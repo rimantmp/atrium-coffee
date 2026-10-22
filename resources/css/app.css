@@ -2,33 +2,77 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
 
+/*
+ | Design tokens (DESIGN.md 5 and 7).
+ | One palette only: coffee (brand anchor), caramel (limited accent), stone (neutral).
+ | Semantic states reuse Tailwind's emerald/amber/red/sky per DESIGN.md 7.2.
+ | Radius uses Tailwind defaults, which already match DESIGN.md 5.2
+ | (lg chip, xl button/input, 2xl card, full avatar/badge).
+ */
 @theme {
-    --font-sans: 'Instrument Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --color-coffee-50: #f4f3ff;
-    --color-coffee-100: #ebe9fe;
-    --color-coffee-200: #d9d6fe;
-    --color-coffee-500: #7367f0;
-    --color-coffee-600: #6258d6;
-    --color-coffee-700: #5148b8;
-    --color-coffee-800: #40398f;
-    --color-coffee-900: #302b69;
+    --font-sans: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    --color-coffee-50: #faf7f2;
+    --color-coffee-100: #f3eadf;
+    --color-coffee-200: #e7d3bd;
+    --color-coffee-300: #d6b392;
+    --color-coffee-400: #be8e66;
+    --color-coffee-500: #a66f4f;
+    --color-coffee-600: #8b563e;
+    --color-coffee-700: #704333;
+    --color-coffee-800: #5c372d;
+    --color-coffee-900: #4b2f27;
+    --color-coffee-950: #2a1915;
+
+    --color-caramel-50: #fff9eb;
+    --color-caramel-100: #fdf0c8;
+    --color-caramel-200: #f9dc8c;
+    --color-caramel-300: #f3c24f;
+    --color-caramel-400: #e9a925;
+    --color-caramel-500: #cd8618;
+    --color-caramel-600: #a96413;
+    --color-caramel-700: #884b15;
+    --color-caramel-800: #703d18;
+    --color-caramel-900: #5f3419;
+
+    /* Reserved for overlays and the customer hero; cards stay on shadow-sm (DESIGN.md 5.3). */
+    --shadow-soft: 0 8px 24px rgb(42 25 21 / 0.08);
 }
 
 @layer base {
-    body { @apply bg-slate-50 text-slate-800 antialiased; }
+    html { @apply scroll-smooth; }
+
+    body { @apply bg-stone-50 text-stone-900 antialiased; }
+
+    [x-cloak] { display: none !important; }
+
     button, a, input, select, textarea { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-500 focus-visible:ring-offset-2; }
     button, summary, select { @apply cursor-pointer; }
     input, select, textarea { @apply transition-colors; }
-    input:disabled, select:disabled, textarea:disabled { @apply cursor-not-allowed bg-slate-100 text-slate-500; }
+    input:disabled, select:disabled, textarea:disabled { @apply cursor-not-allowed bg-stone-100 text-stone-500; }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
 }
 
+/*
+ | Component classes that are shared by markup which cannot be a Blade component:
+ | `ui-input` backs the three form components and the compact filter bars,
+ | `category-filter` is toggled by app.js (`is-active`), and the admin-* classes
+ | serve the native <dialog> contract owned by app.js.
+ */
 @layer components {
-    .ui-card { @apply rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_12px_rgba(31,38,135,0.06)]; }
-    .ui-input { @apply min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-sm text-slate-800 placeholder:text-slate-400 hover:border-slate-400 focus:border-coffee-500; }
-    .ui-label { @apply mb-1.5 block text-sm font-semibold text-slate-700; }
-    .ui-button-primary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-coffee-500 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-coffee-600 active:scale-[0.99]; }
-    .ui-button-secondary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50; }
-    .ui-table-head { @apply bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500; }
-    .ui-badge { @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold; }
+    /* Placeholder is stone-500, not stone-400 (DESIGN.md 5.4): stone-400 sits at 2.5:1 on white and fails R-25. */
+    .ui-input { @apply min-h-11 w-full rounded-xl border border-stone-300 bg-white px-3.5 text-sm text-stone-900 placeholder:text-stone-500 hover:border-stone-400 focus:border-coffee-500; }
+    .ui-table-head { @apply bg-stone-50 text-xs font-semibold uppercase tracking-wide text-stone-600; }
+    .category-filter { @apply min-h-10 shrink-0 rounded-full border border-stone-200 bg-white px-5 text-sm font-semibold text-stone-700 transition duration-150 ease-out hover:border-coffee-300 hover:bg-coffee-50; }
+    .category-filter.is-active { @apply border-coffee-600 bg-coffee-600 text-white hover:border-coffee-600 hover:bg-coffee-600; }
+    .admin-icon-button { @apply grid size-11 place-items-center rounded-xl text-stone-500 transition duration-150 ease-out hover:bg-stone-100 hover:text-stone-800; }
+    .admin-modal { @apply m-auto w-[calc(100%-2rem)] max-w-xl overflow-visible rounded-2xl bg-transparent p-0 backdrop:bg-stone-950/50; }
+    .admin-modal-panel { @apply max-h-[90dvh] overflow-y-auto rounded-2xl border border-stone-200 bg-white shadow-md; }
+    .admin-modal-header { @apply flex items-start justify-between gap-4 border-b border-stone-100 px-5 py-4 sm:px-6; }
 }
